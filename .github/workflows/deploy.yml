@@ -55,5 +55,5 @@ jobs:
             docker rm account
             docker rmi coramdeoyouth/account:latest
             docker pull coramdeoyouth/account:latest
-            docker run -d -p 30000:30000 --name account -e NODE_ENV=development --restart unless-stopped coramdeoyouth/account:latest
+            docker run -d -p 30000:30000 --name account -e NODE_ENV=development --network auth-net --restart unless-stopped coramdeoyouth/account:latest
           EOF
