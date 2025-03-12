@@ -1,4 +1,5 @@
 import express, { json } from "express"
+import handler from "./errors/errors.js"
 import { V1GatewayRouter } from "./router/apigateway.js"
 import { initDatabase } from "./utils/mysql.js"
 
@@ -7,6 +8,7 @@ const router = express.Router()
 router.use("/v1", V1GatewayRouter)
 
 app.use(json())
+app.use(handler)
 
 await initDatabase()
 
