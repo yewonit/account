@@ -9,9 +9,11 @@ const environment = {
 		DB_USER: process.env.LOCAL_DB_USER,
 		DB_PASSWORD: process.env.LOCAL_DB_PASSWORD,
 		DB_NAME: process.env.LOCAL_DB_NAME,
-		REDIS_HOST: process.env.LOCAL_REDIS_HOST || localhost,
+		REDIS_HOST: process.env.LOCAL_REDIS_HOST || "localhost",
 		REDIS_PORT: process.env.LOCAL_REDIS_PORT || 6379,
 		JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+		SENDER_EMAIL: process.env.SENDER_EMAIL,
+		SENDER_SECRET: process.env.SENDER_SECRET
 	},
 	development: {
 		DB_HOST: process.env.DEVELOPMENT_DB_HOST,
@@ -21,6 +23,8 @@ const environment = {
 		REDIS_HOST: process.env.DEV_REDIS_HOST,
 		REDIS_PORT: process.env.DEV_REDIS_PORT,
 		JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+		SENDER_EMAIL: process.env.SENDER_EMAIL,
+		SENDER_SECRET: process.env.SENDER_SECRET
 	},
 	production: {
 		DB_HOST: process.env.PRODUCTION_DB_HOST,
@@ -30,6 +34,8 @@ const environment = {
 		REDIS_HOST: process.env.PROD_REDIS_HOST,
 		REDIS_PORT: process.env.PROD_REDIS_PORT,
 		JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+		SENDER_EMAIL: process.env.SENDER_EMAIL,
+		SENDER_SECRET: process.env.SENDER_SECRET
 	},
 }
 
