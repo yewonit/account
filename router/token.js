@@ -4,7 +4,6 @@ import generateTokens from "../utils/generate_token.js"
 import redis from "../utils/redis.js"
 
 const router = Router()
-const env = process.env.NODE_ENV
 
 // /token 엔드포인트: 이메일과 이름을 받아 JWT 토큰 생성 후 반환
 router.post("/token", async (req, res) => {
@@ -16,10 +15,8 @@ router.post("/token", async (req, res) => {
 			.json({ error: "Email and name and password are required" })
 	}
 
-	console.log(password)
 	const encodedPassword = Buffer.from(password).toString("base64")
 
-	console.log(encodedPassword)
 	const user = await User.findOne({
 		where: {
 			name: name,
@@ -29,7 +26,7 @@ router.post("/token", async (req, res) => {
 	})
 
 	if (user.password !== encodedPassword) {
-		return res.status(401).json({ error: "Invalid email or password" })
+		return res.status(401).json({ error: "Password not matched." })
 	}
 
 	// JWT 토큰 생성
@@ -42,12 +39,8 @@ router.post("/token", async (req, res) => {
 
 	try {
 		// Redis에 토큰 저장 (TTL 설정)
-		await redis.setex(`${env}_accessToken_${email}`, 60 * 60 * 3, accessToken) // 3시간 TTL
-		await redis.setex(
-			`${env}_refreshToken_${email}`,
-			60 * 60 * 24 * 7,
-			refreshToken
-		) // 1주일 TTL
+		await redis.setex(accessToken, accessTokenExpiresAt, true) // 3시간 TTL
+		await redis.setex(refreshToken, refreshTokenExpiresAt, true) // 1주일 TTL
 
 		// 응답으로 토큰 반환
 		res.json({
@@ -62,4 +55,4 @@ router.post("/token", async (req, res) => {
 	}
 })
 
-export { router as TokenRouter }
+export default router

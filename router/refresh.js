@@ -4,7 +4,6 @@ import redis from "../utils/redis.js"
 import verifyToken from "../utils/verify_token.js"
 
 const router = Router()
-const env = process.env.NODE_ENV
 
 // /refresh 엔드포인트: refreshToken을 받아 새로운 accessToken과 refreshToken 갱신
 router.post("/refresh", async (req, res) => {
@@ -14,13 +13,22 @@ router.post("/refresh", async (req, res) => {
 		return res.status(400).json({ error: "Refresh token is required" })
 	}
 
+	await redis.get(refreshToken, (err, result) => {
+		if (err) {
+			throw new Error(err)
+		}
+		else if (!result) {
+			return res.status(401).json({ error: "Expired" })
+		}
+	})
+
 	try {
 		// refreshToken 검증
 		verifyToken(refreshToken, async (err, decoded) => {
 			if (err) {
 				return res
 					.status(401)
-					.json({ error: "Invalid or expired refresh token" })
+					.json({ error: "Invalid refresh token" })
 			}
 
 			const { email, name } = decoded
@@ -35,14 +43,14 @@ router.post("/refresh", async (req, res) => {
 
 			// Redis에 새로운 토큰 저장
 			await redis.setex(
-				`${env}_accessToken_${email}`,
+				accessToken,
 				accessTokenExpiresAt,
-				accessToken
+				true
 			) // 3시간 TTL
 			await redis.setex(
-				`${env}_refreshToken_${email}`,
+				newRefreshToken,
 				refreshTokenExpiresAt,
-				newRefreshToken
+				true
 			) // 1주일 TTL
 
 			// 새로운 토큰 반환
@@ -59,4 +67,4 @@ router.post("/refresh", async (req, res) => {
 	}
 })
 
-export { router as RefreshRouter }
+export default router
