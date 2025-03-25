@@ -16,8 +16,7 @@ router.post("/refresh", async (req, res) => {
 	await redis.get(refreshToken, (err, result) => {
 		if (err) {
 			throw new Error(err)
-		}
-		else if (!result) {
+		} else if (!result) {
 			return res.status(401).json({ error: "Expired" })
 		}
 	})
@@ -26,12 +25,11 @@ router.post("/refresh", async (req, res) => {
 		// refreshToken 검증
 		verifyToken(refreshToken, async (err, decoded) => {
 			if (err) {
-				return res
-					.status(400)
-					.json({ error: "Invalid refresh token" })
+				return res.status(400).json({ error: "Invalid refresh token" })
 			}
 
 			const { email, name } = decoded
+			await redis.del([`${refreshToken}`])
 
 			// 새로운 JWT 토큰 생성
 			const {
@@ -42,16 +40,8 @@ router.post("/refresh", async (req, res) => {
 			} = generateTokens(email, name)
 
 			// Redis에 새로운 토큰 저장
-			await redis.setex(
-				accessToken,
-				accessTokenExpiresAt,
-				true
-			) // 3시간 TTL
-			await redis.setex(
-				newRefreshToken,
-				refreshTokenExpiresAt,
-				true
-			) // 1주일 TTL
+			await redis.setex(accessToken, accessTokenExpiresAt, true) // 3시간 TTL
+			await redis.setex(newRefreshToken, refreshTokenExpiresAt, true) // 1주일 TTL
 
 			// 새로운 토큰 반환
 			res.json({
