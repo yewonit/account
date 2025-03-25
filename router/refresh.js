@@ -27,7 +27,7 @@ router.post("/refresh", async (req, res) => {
 		verifyToken(refreshToken, async (err, decoded) => {
 			if (err) {
 				return res
-					.status(401)
+					.status(400)
 					.json({ error: "Invalid refresh token" })
 			}
 

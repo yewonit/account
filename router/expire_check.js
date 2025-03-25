@@ -20,7 +20,7 @@ router.post("/verify", async (req, res) => {
         verifyToken(accessToken, async (err, decoded) => {
             if (err) {
                 return res
-                    .status(401)
+                    .status(400)
                     .json({ error: "Invalid access token" })
             }
     
