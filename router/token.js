@@ -7,26 +7,12 @@ const router = Router()
 
 // /token 엔드포인트: 이메일과 이름을 받아 JWT 토큰 생성 후 반환
 router.post("/token", async (req, res) => {
-	const { email, name, password } = req.body
+	const { email, name } = req.body
 
-	if (!email || !name || !password) {
+	if (!email || !name) {
 		return res
 			.status(400)
-			.json({ error: "Email and name and password are required" })
-	}
-
-	const encodedPassword = Buffer.from(password).toString("base64")
-
-	const user = await User.findOne({
-		where: {
-			name: name,
-			email: email,
-			is_deleted: "N",
-		},
-	})
-
-	if (user.password !== encodedPassword) {
-		return res.status(401).json({ error: "Password not matched." })
+			.json({ error: `Email and name are required  email: ${email}, name: ${name}` })
 	}
 
 	// JWT 토큰 생성
