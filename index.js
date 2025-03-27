@@ -8,8 +8,6 @@ const router = express.Router()
 router.use("/v1", V1GatewayRouter)
 
 app.use(json())
-app.use(handler)
-
 await initDatabase()
 
 app.use("/health-check", (req, res) => {
@@ -18,6 +16,8 @@ app.use("/health-check", (req, res) => {
 })
 
 app.use(router)
+app.use(handler)
+
 
 // 서버 실행
 const port = process.env.PORT || 30000
