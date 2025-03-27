@@ -16,6 +16,13 @@ app.use("/health-check", (req, res) => {
 app.use(router)
 app.use(handler)
 
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception thrown:", error);
+});
 
 // 서버 실행
 const port = process.env.PORT || 30000
