@@ -1,14 +1,12 @@
 import express, { json } from "express"
 import handler from "./errors/errors.js"
 import { V1GatewayRouter } from "./router/apigateway.js"
-import { initDatabase } from "./utils/mysql.js"
 
 const app = express()
 const router = express.Router()
 router.use("/v1", V1GatewayRouter)
 
 app.use(json())
-await initDatabase()
 
 app.use("/health-check", (req, res) => {
 	res.status = 200

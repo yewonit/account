@@ -1,5 +1,4 @@
 import { Router } from "express"
-import User from "../models/user.js"
 import generateTokens from "../utils/generate_token.js"
 import redis from "../utils/redis.js"
 
@@ -15,15 +14,15 @@ router.post("/token", async (req, res) => {
 			.json({ error: `Email and name are required  email: ${email}, name: ${name}` })
 	}
 
-	// JWT 토큰 생성
-	const {
-		accessToken,
-		refreshToken,
-		accessTokenExpiresAt,
-		refreshTokenExpiresAt,
-	} = generateTokens(email, name)
-
 	try {
+		// JWT 토큰 생성
+		const {
+			accessToken,
+			refreshToken,
+			accessTokenExpiresAt,
+			refreshTokenExpiresAt,
+		} = generateTokens(email, name)
+
 		// Redis에 토큰 저장 (TTL 설정)
 		await redis.setex(accessToken, accessTokenExpiresAt, true) // 3시간 TTL
 		await redis.setex(refreshToken, refreshTokenExpiresAt, true) // 1주일 TTL

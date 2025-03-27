@@ -13,15 +13,17 @@ router.post("/refresh", async (req, res) => {
 		return res.status(400).json({ error: "Refresh token is required" })
 	}
 
-	await redis.get(refreshToken, (err, result) => {
-		if (err) {
-			throw new Error(err)
-		} else if (!result) {
-			return res.status(401).json({ error: "Expired" })
-		}
-	})
-
 	try {
+		await redis.get(refreshToken, (err, result) => {
+			if (err) {
+				throw new Error(err)
+			} else if (!result) {
+				const error = new Error("Expired")
+				error.status = 401
+				throw error
+			}
+		})
+
 		// refreshToken 검증
 		verifyToken(refreshToken, async (err, decoded) => {
 			if (err) {
