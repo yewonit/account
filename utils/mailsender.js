@@ -44,11 +44,11 @@ const sendVerificationEmail = async (receiver) => {
 
 const verifyEmailCode = async (email, code) => {
 	return await redis.get(`email_verification_${email}`, async (err, result) => {
-		if (result.trim() === code.trim()) {
+		if (!result || result !== code) {
+			return false
+		} else if (result === code) {
 			await redis.del([`email_verification_${email}`])
 			return true
-		} else if (!result || result !== email) {
-			return false
     } else {
 			throw new Error(`Email verification error : ${err}`)
 		}
