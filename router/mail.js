@@ -8,7 +8,7 @@ router.post("/code", async (req, res, next) => {
 	if (!receiver) return res.status(400).json({ error: "Email not exists."})
 	try {
 		await mailsender.sendVerificationEmail(receiver)
-		res.status(200).json(true)
+		res.status(200).json({ result: true })
 	} catch (error) {
 		next(error)
 	}
@@ -19,7 +19,7 @@ router.post("/verify", async (req, res, next) => {
 	if (!email || !code) return res.status(400).json({ error: "Email or Code not exists."})
 	try {
 		const result = await mailsender.verifyEmailCode(email, code)
-		res.status(200).json(result)
+		res.status(200).json({ result })
 	} catch (error) {
 		next(error)
 	}
