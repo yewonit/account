@@ -47,9 +47,9 @@ const verifyEmailCode = async (email, code) => {
 		if (result.trim() === code.trim()) {
 			await redis.del([`email_verification_${email}`])
 			return true
-		} else if (result !== email) {
+		} else if (!result || result !== email) {
 			return false
-		} else {
+    } else {
 			throw new Error(`Email verification error : ${err}`)
 		}
 	})
