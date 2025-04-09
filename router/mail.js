@@ -25,4 +25,15 @@ router.post("/verify", async (req, res, next) => {
 	}
 })
 
+router.post("/reset-password", async (req, res, next) => {
+	const { email, newPassword } = req.body
+	if (!email || !newPassword) return res.status(400).json({ error: "Email or new Password not exists."})
+	try {
+		const result = await mailsender.sendResetPasswordEmail(email, newPassword)
+		res.status(200).json({ result })
+	} catch (error) {
+		next(error)
+	}
+})
+
 export default router

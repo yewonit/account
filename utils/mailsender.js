@@ -24,8 +24,8 @@ const sendVerificationEmail = async (receiver) => {
 	const mailOptions = {
 		from: SENDER, // 발신자
 		to: receiver, // 수신자
-		subject: "이메일 인증 코드",
-		html: mailTemplate(verificationCode),
+		subject: "[두기고] 이메일 인증 코드",
+		html: mailTemplate("두기고 인증코드", "다음은 이메일 인증을 위한 코드입니다", verificationCode),
 		text: `안녕하세요! 인증 코드는 다음과 같습니다: ${verificationCode}`,
 	}
 
@@ -53,7 +53,24 @@ const verifyEmailCode = async (email, code) => {
   }
 }
 
-const mailTemplate = (code) => {
+const sendResetPasswordEmail = async (receiver, newPassword) => {
+  const mailOptions = {
+    from: SENDER,
+    to: receiver,
+    subject: "[두기고] 비밀번호 재설정",
+    html: mailTemplate("비밀번호 재설정", "재설정된 비밀번호입니다", newPassword),
+    text: `안녕하세요! 재설정된 비밀번호는 다음과 같습니다: ${newPassword}`,
+  }
+
+  try {
+		await transporter.sendMail(mailOptions)
+		return true
+	} catch (error) {
+		throw new Error("이메일 전송 중 오류가 발생했습니다.")
+	}
+}
+
+const mailTemplate = (subject, description, code) => {
 	return `
     <table
   style="
@@ -115,7 +132,7 @@ const mailTemplate = (code) => {
         font-weight: bold;
       "
     >
-      두기고 인증코드
+      ${subject}
     </td>
   </tr>
 
@@ -130,7 +147,7 @@ const mailTemplate = (code) => {
         font-size: 14px;
       "
     >
-      <p style="margin: 0 0 10px;">다음은 이메일 인증을 위한 코드입니다</p>
+      <p style="margin: 0 0 10px;">${description}</p>
       <p
         style="
           font-size: 24px;
@@ -147,4 +164,4 @@ const mailTemplate = (code) => {
     `
 }
 
-export default { sendVerificationEmail, verifyEmailCode }
+export default { sendVerificationEmail, verifyEmailCode, sendResetPasswordEmail }
