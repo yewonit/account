@@ -53,23 +53,6 @@ const verifyEmailCode = async (email, code) => {
   }
 }
 
-const sendResetPasswordEmail = async (receiver, newPassword) => {
-  const mailOptions = {
-    from: SENDER,
-    to: receiver,
-    subject: "[두기고] 비밀번호 재설정",
-    html: mailTemplate("비밀번호 재설정", "재설정된 비밀번호입니다", newPassword),
-    text: `안녕하세요! 재설정된 비밀번호는 다음과 같습니다: ${newPassword}`,
-  }
-
-  try {
-		await transporter.sendMail(mailOptions)
-		return true
-	} catch (error) {
-		throw new Error("이메일 전송 중 오류가 발생했습니다.")
-	}
-}
-
 const mailTemplate = (subject, description, code) => {
 	return `
     <table
