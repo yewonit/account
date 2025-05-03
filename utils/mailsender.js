@@ -147,4 +147,4 @@ const mailTemplate = (subject, description, code) => {
     `
 }
 
-export default { sendVerificationEmail, verifyEmailCode, sendResetPasswordEmail }
+export default { sendVerificationEmail, verifyEmailCode }
